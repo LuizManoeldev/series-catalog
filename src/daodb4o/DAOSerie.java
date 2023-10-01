@@ -31,42 +31,46 @@ public class DAOSerie extends DAO<Serie> {
 		}
 	}
 	
+	public void create(Serie obj) {
+		manager.store(obj);
+	}
+	
 	//Consultas
 	
-	public Serie seriesDoAno(String ano) {
+	public List<Serie> seriesDoAno(String ano) {
 		Query q;
 		q = manager.query();
 		q.constrain(Serie.class);
 		q.descend("ano").constrain(ano);
 		List<Serie> resultados = q.execute();
 		if (resultados.size() > 0 ) {
-			return resultados.get(0);
+			return resultados;
 		}else {
 			return null;
 		}
 	}
 	
-	public Serie seriesDoGenero(String nomeDoGenero) {
+	public List<Serie> seriesDoGenero(String nomeDoGenero) {
 		Query g;
 		g = manager.query();
 		g.constrain(Serie.class);
 		g.descend("genero").descend("nome").constrain(nomeDoGenero);
 		List<Serie> resultados = g.execute();
 		if (resultados.size() > 0 ) {
-			return resultados.get(0);
+			return resultados;
 		}else {
 			return null;
 		}
 	}
 	
-	public Serie seriesComMaisDeXEpisodios(int numerdoDeEpisodios) {
+	public List<Serie> seriesComMaisDeXEpisodios(int numerdoDeEpisodios) {
 		Query f;
 		f = manager.query();
 		f.constrain(Serie.class);
 		f.constrain(new filtroEpisodios());
 		List<Serie> resultados = f.execute();
 		if (resultados.size() > 0 ) {
-			return resultados.get(0);
+			return resultados;
 		}else {
 			return null;
 		}

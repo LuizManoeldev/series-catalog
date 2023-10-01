@@ -20,10 +20,10 @@ public class DAOEpisodio extends DAO<Episodio>{
 
 	@Override
 	public Episodio read(Object chave) {
-		int id = (int) chave;
+		String nome = (String) chave;
 		Query q = manager.query();
 		q.constrain(Episodio.class);
-		q.descend("id").constrain(id);
+		q.descend("nome").constrain(nome);
 		List<Episodio> resultados = q.execute();
 		if (resultados.size() > 0 ) {
 			return resultados.get(0);
@@ -31,6 +31,11 @@ public class DAOEpisodio extends DAO<Episodio>{
 			return null;
 		}
 	}
+	
+	public void create(Episodio obj) {
+		manager.store(obj);
+	}
+	
 	
 	// Consultas
 	

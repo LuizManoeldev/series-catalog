@@ -32,6 +32,10 @@ public class DAOGenero extends DAO<Genero> {
 		}
 	}
 	
+	public void create(Genero obj) {
+		manager.store(obj);
+	}
+	
 	
 }
 	
