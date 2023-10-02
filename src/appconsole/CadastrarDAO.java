@@ -68,7 +68,8 @@ public class CadastrarDAO {
 		}
 		
 		Fachada.finalizar();
-		System.out.println("teste");
+		System.out.println("\nfim do programa !");
+		
 		
 	}
 	

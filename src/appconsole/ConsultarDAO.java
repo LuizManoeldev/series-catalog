@@ -8,10 +8,10 @@ public class ConsultarDAO {
 		try {
 			Fachada.inicializar();
 			// Corrigir bug
-			//System.out.println("Series com mais de 1 episodio:");
-			//for(Serie s : Fachada.seriesComMaisDeXEpisodios(1)){
-				//System.out.println(s);
-			//}
+			System.out.println("Series com mais de 1 episodio:");
+			for(Serie s : Fachada.seriesComMaisDeXEpisodios(1)){
+				System.out.println(s);
+			}
 			
 			System.out.println();
 			System.out.println("Series de 2019:");
@@ -29,8 +29,8 @@ public class ConsultarDAO {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
 		Fachada.finalizar();
+		System.out.println("\nfim do programa !");
 	}
 	
 	

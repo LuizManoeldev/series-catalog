@@ -37,6 +37,8 @@ public class Fachada {
 		DAO.close();
 	}
 	
+	
+	//Insert
 	public static Genero cadastrarGenero(String nome) throws Exception {
 		DAO.open();
 		Genero genero = daogenero.read(nome);
@@ -81,6 +83,7 @@ public class Fachada {
 		serie = new Serie(nome, ano, generoObj, canal);
 		daoserie.create(serie);
 		generoObj.adicionar(serie);
+		daogenero.update(generoObj);
 		DAO.commit();
 		
 		return serie;
@@ -100,10 +103,48 @@ public class Fachada {
 		}
 		
 		serie.adicionar(episodio);
+		daoserie.update(serie);
+		daoepisodio.update(episodio);
+		
 		DAO.commit();
 	}
 	
-	// Aplicar regras de negocio nas operação de delete
+	//Update
+	@SuppressWarnings("unused")
+	public static void atualizarGeneroDeSerie(String nomeGenero, String nomeSerie) throws Exception {
+		DAO.begin();
+		
+		Genero novoGenero = daogenero.read(nomeGenero);
+		Serie serie = daoserie.read(nomeSerie);
+		Genero antigoGenero = serie.getGenero();
+		
+		if(serie == null) { 
+			throw new Exception("Serie não encontrada: " + nomeSerie);
+		}
+		
+		if(novoGenero == null) { 
+			throw new Exception("Novo Genero não encontrado: " + nomeGenero);
+		}
+		//Removendo Serie do antigo genero
+		antigoGenero.remover(serie);
+		
+		
+		//Removendo antigo genero da serie e adicionando o novo
+		serie.setGenero(novoGenero);
+		
+		// Adicionando Serie no genero
+		novoGenero.adicionar(serie);
+		
+		daogenero.update(antigoGenero);
+		daogenero.update(novoGenero);
+		daoserie.update(serie);
+		DAO.commit();
+
+	}
+	
+	
+	
+	// Delete
 	public static void excluirGenero(String nome) throws Exception {
 		DAO.begin();
 		Genero genero = daogenero.read(nome);
@@ -137,6 +178,9 @@ public class Fachada {
 		if( serie == null) {
 			throw new Exception("Serie inexistente");
 		}
+		//Removendo serie da lista de series do genero
+		serie.getGenero().remover(serie);
+		daogenero.update(serie.getGenero());
 		
 		daoserie.delete(serie);
 		
@@ -144,6 +188,9 @@ public class Fachada {
 		
 	}
 	
+	
+	
+	// Listagem
 	public static List<Genero> listarGenero() {
 		DAO.begin();
 		List<Genero> resultados =  daogenero.readAll();
@@ -165,13 +212,17 @@ public class Fachada {
 		return resultados;
 	}
 	
+	public static Serie localizarSerie(String nomeDaSerie) {
+		DAO.begin();
+		Serie serie =  daoserie.read(nomeDaSerie);
+		DAO.commit();
+		return serie;
+	}
 	
 	
 	
 	
 	//consultas especificas
-	
-	
 	public static List<Serie> seriesDoAno(String ano) {
 		DAO.begin();
 		List<Serie> resultados = daoserie.seriesDoAno(ano);
@@ -186,15 +237,18 @@ public class Fachada {
 		return resultados;
 	}
 	
-	public static List<Serie> seriesComMaisDeXEpisodios(int numeroDeEpisodios) throws Exception{
+	public static List<Serie> seriesComMaisDeXEpisodios(int numeroDeEps) throws Exception{
 		DAO.begin();
-		List<Serie> resultados = daoserie.seriesComMaisDeXEpisodios(numeroDeEpisodios);
+		List<Serie> resultados = daoserie.seriesComMaisDeXEpisodios(numeroDeEps);
 		if (resultados == null) {
-			throw new Exception("falha na leitura do banco");
+			throw new Exception("falha na leitura do banco" + resultados);
 		}
 		DAO.commit();
 		return resultados;
 	}
+	
+	
+	
 	
 	//Usuario
 	public static Usuario cadastrarUsuario(String nome, String senha) throws Exception{

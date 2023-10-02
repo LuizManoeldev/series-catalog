@@ -6,13 +6,14 @@
  **********************************/
 
 package daodb4o;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.db4o.query.Candidate;
 import com.db4o.query.Evaluation;
 import com.db4o.query.Query;
 
-
+import modelo.Episodio;
 import modelo.Serie;
 
 public class DAOSerie extends DAO<Serie> {
@@ -34,6 +35,8 @@ public class DAOSerie extends DAO<Serie> {
 	public void create(Serie obj) {
 		manager.store(obj);
 	}
+	
+	
 	
 	//Consultas
 	
@@ -63,28 +66,43 @@ public class DAOSerie extends DAO<Serie> {
 		}
 	}
 	
-	public List<Serie> seriesComMaisDeXEpisodios(int numerdoDeEpisodios) {
-		Query f;
-		f = manager.query();
-		f.constrain(Serie.class);
-		f.constrain(new filtroEpisodios());
-		List<Serie> resultados = f.execute();
-		if (resultados.size() > 0 ) {
-			return resultados;
-		}else {
-			return null;
-		}
+	public List<Serie> seriesComMaisDeXEpisodios(int numeroDeEpisodios) {
+	    Query f = manager.query();
+	    f.constrain(Serie.class);
+	    f.descend("listaEpisodios");
+	    //f.constrain(new filtroEpisodios(numeroDeEpisodios));
+	    
+	    List<Serie> resultados = f.execute();
+	    
+	    // Lista para armazenar séries com mais de X episódios
+	    List<Serie> seriesComMaisDeXEpisodios = new ArrayList<>();
+
+	    // Filtra séries com mais de X episódios
+	    for (Serie serie : resultados) {
+	        if (serie.getEpisodios().size() > numeroDeEpisodios) {
+	            seriesComMaisDeXEpisodios.add(serie);
+	        }
+	    }
+	    
+	    return resultados;
 	}	
 }
 
 
 
 class filtroEpisodios implements Evaluation {
-	public void evaluate(Candidate candidate) {
-		Serie serie= (Serie) candidate.getObject();
-		if(serie.getEpisodios().size() > 1) 
-			candidate.include(true); 
-		else		
-			candidate.include(false);
-	}
+    private int numeroDeEpisodios;
+
+    public filtroEpisodios(int numeroDeEpisodios) {
+        this.numeroDeEpisodios = numeroDeEpisodios;
+    }
+
+    public void evaluate(Candidate candidate) {
+        Serie serie = (Serie) candidate.getObject();
+        if (serie.getEpisodios().size() > numeroDeEpisodios) {
+            candidate.include(true);
+        } else {
+            candidate.include(false);
+        }
+    }
 }
