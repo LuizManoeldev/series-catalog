@@ -45,12 +45,7 @@ public class DAOSerie extends DAO<Serie> {
 		q = manager.query();
 		q.constrain(Serie.class);
 		q.descend("ano").constrain(ano);
-		List<Serie> resultados = q.execute();
-		if (resultados.size() > 0 ) {
-			return resultados;
-		}else {
-			return null;
-		}
+		return q.execute();
 	}
 	
 	public List<Serie> seriesDoGenero(String nomeDoGenero) {
@@ -58,12 +53,7 @@ public class DAOSerie extends DAO<Serie> {
 		g = manager.query();
 		g.constrain(Serie.class);
 		g.descend("genero").descend("nome").constrain(nomeDoGenero);
-		List<Serie> resultados = g.execute();
-		if (resultados.size() > 0 ) {
-			return resultados;
-		}else {
-			return null;
-		}
+		return g.execute();
 	}
 	
 	public List<Serie> seriesComMaisDeXEpisodios(int numeroDeEpisodios) {
@@ -79,12 +69,13 @@ public class DAOSerie extends DAO<Serie> {
 
 	    // Filtra séries com mais de X episódios
 	    for (Serie serie : resultados) {
-	        if (serie.getEpisodios().size() > numeroDeEpisodios) {
+	        if ((serie.getEpisodios()).size() > numeroDeEpisodios) {
 	            seriesComMaisDeXEpisodios.add(serie);
 	        }
 	    }
+	 
 	    
-	    return resultados;
+	    return seriesComMaisDeXEpisodios;
 	}	
 }
 

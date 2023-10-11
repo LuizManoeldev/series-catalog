@@ -9,6 +9,8 @@ public class Serie {
 	private Genero genero;
 	private String canal;
 	
+	
+	
 	public Serie(String nome, String ano, Genero genero, String canal) {
 		super();
 		this.nome = nome;
@@ -57,6 +59,7 @@ public class Serie {
 	}
 	
 	public ArrayList<Episodio> getEpisodios() {
+		listaEpisodios.removeIf(elemento -> elemento == null);
 		return this.listaEpisodios;
 	}
 

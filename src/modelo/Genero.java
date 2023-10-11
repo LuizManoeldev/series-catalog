@@ -28,6 +28,10 @@ public class Genero {
 		this.nome = nome;
 	}
 	
+	public ArrayList<Serie> getSeries() {
+		return this.listaSeries;
+	}
+	
 	@Override
 	public String toString() {
 		return "Genero [nome = " + nome + " ]" ;
